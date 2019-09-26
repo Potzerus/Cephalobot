@@ -3,3 +3,5 @@ bot_prefix: "!"
 sticky_roles:
   - 567729442244263937
   - 567727926666067987
+deleted_webhook: ""
+deleted_highlight: 13836589
