@@ -86,7 +86,7 @@ def GenerateDeletedJsonBody(message : discord.Message):
                     "name": "Message",
                     "value": message.content
                 }],
-            "color": 13836589
+            "color": config["deleted_highlight"]
         }]
     }
 
