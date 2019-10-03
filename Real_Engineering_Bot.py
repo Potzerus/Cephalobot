@@ -24,7 +24,7 @@ async def on_ready():
 
 
 @bot.event
-async def on_member_remove(member : discord.Message):
+async def on_member_remove(member : discord.Member):
     for stickied in config["sticky_roles"]:
         if member.guild.get_role(stickied) in member.roles:
             server.insert({"server_id": member.guild.id, "member_id": member.id, "role_id": stickied})
@@ -32,7 +32,7 @@ async def on_member_remove(member : discord.Message):
 
 
 @bot.event
-async def on_member_join(member : discord.Message):
+async def on_member_join(member : discord.Member):
     for stickied in server.search((Query().server_id == member.guild.id) & (Query().member_id == member.id)):
         await member.add_roles(member.guild.get_role(stickied["role_id"]), reason="Role Persistence")
         server.remove((Query().server_id == member.guild.id) & (Query().member_id == member.id))
