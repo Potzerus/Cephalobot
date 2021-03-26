@@ -197,10 +197,10 @@ async def settings(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command()
+@bot.command(short_desc="Un-sets a value, see 'c!help reset' for a list")
 @commands.check_any(commands.has_permissions(administrator=True), is_mod(), is_admin())
 async def reset(ctx, *, arg: str):
-    """Let's you reset a configured setting on the bot valid targets are
+    """Let's you reset a configured setting on the bot, valid targets are:
     mod roles
     basically lets you instantly remove all mod roles from the bot
 
