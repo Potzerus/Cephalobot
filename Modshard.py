@@ -107,6 +107,7 @@ async def on_message_delete(message):
         embed.add_field(name="UserId", value=message.author.id, inline=False)
         embed.add_field(name="Channel", value="<#%d>" % message.channel.id, inline=False)
         embed.add_field(name="Content", value=message.content or "Empty Message", inline=False)
+        embed.add_field(name="Message ID", value=message.id, inline=False)
         await webhook_send(get_guild(message.channel)['message log'], embed)
 
 
@@ -118,10 +119,12 @@ async def on_message_edit(before, after):
         embed = discord.Embed(color=discord.Color.blue())
         embed.title = "Edited Message"
         embed.add_field(name="Username", value=after.author)
+        embed.add_field(name="Message Link", value="[Click to Jump to Message](%s)" % after.jump_url)
         embed.add_field(name="UserId", value=after.author.id, inline=False)
         embed.add_field(name="Channel", value="<#%d>" % before.channel.id, inline=False)
         embed.add_field(name="Before", value=before.content or "Message Empty", inline=False)
         embed.add_field(name="After", value=after.content or "Message Empty", inline=False)
+        embed.add_field(name="Message ID", value=after.id, inline=False)
         await webhook_send(guild['message log'], embed)
 
 
