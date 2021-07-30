@@ -1,10 +1,13 @@
 import json
+from io import BytesIO
+
 import discord
+import requests
 from discord.ext import commands
 from threading import Event, Thread
 
-bot = commands.Bot(command_prefix="c!")
-info = json.loads(open("Info.json").read())
+bot = commands.Bot(command_prefix="c!", intents=discord.Intents.all())
+info: dict = json.loads(open("Info.json").read())
 
 
 # Cant get this to work will comment for now
@@ -494,4 +497,47 @@ async def masspong(ctx, *, reason: str = ""):
     await send_long(ctx, output)
 
 
-bot.run(open("Token.txt").read())
+@bot.command()
+@commands.is_owner()
+async def delete(ctx, target):
+    msg = await ctx.channel.fetch_message(target)
+    await msg.delete()
+
+
+def get_request(URL, headers, params):
+    with open("Token.txt") as auth:
+        headers.update({'Authorization': "Bot " + auth.read(), "Content-Type": "application/json"})
+
+    response = requests.get(URL, headers=headers, params=params)
+    output_file = BytesIO(response.text.encode())
+    output_file.seek(0)
+    return output_file
+
+
+def post_request(URL, headers, json):
+    with open("Token.txt") as auth:
+        headers.update({'Authorization': "Bot " + auth.read(), "Content-Type": "application/json"})
+
+    response = requests.post(URL, headers=headers, json=json)
+    output_file = BytesIO(response.text.encode())
+    output_file.seek(0)
+    return output_file
+
+
+@bot.command(name="sad")
+@commands.is_owner()
+async def seek_and_destroy(ctx, target: int = 0):
+    server = ctx.guild.id
+    author = target
+    searchURL = f"https://discord.com/api/v8/guilds/${server}/messages/search?author_id=${author}"
+    await ctx.send(file=discord.File(get_request(searchURL, {}, {}), filename="Results.json"))
+
+
+@bot.command(name="eval")
+@commands.is_owner()
+async def _eval(ctx, *, args: str):
+    await ctx.send(eval(args))
+
+
+with open("Token.txt") as file:
+    bot.run(file.read())
